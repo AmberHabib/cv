@@ -22,7 +22,7 @@ source("cv_printing_functions.r")
 
 # Read in all data and initialize a CV printer object
 CV <- create_CV_object(
-  data_location = "https://docs.google.com/spreadsheets/d/15BFQxdh_-8rVkvc3ysKDfKVny2pqQqZz0PnTs5HbgLg/edit#gid=917338460",  
+  data_location = "https://docs.google.com/spreadsheets/d/15BFQxdh_-8rVkvc3ysKDfKVny2pqQqZz0PnTs5HbgLg/edit#gid=340636497",  
   pdf_mode = params$pdf_mode
 )
 
@@ -40,20 +40,70 @@ if(params$pdf_mode) {
 </style>")
 }
 ```
+```{r message = FALSE, warning = FALSE, results = FALSE}
+library(ggplot2)
+library(gganimate)
 
+t1 <- rnorm(1000,70,25)
+t2 <- rnorm(1000,70,13)
+t3 <- rnorm(1000,70,10)
+print(t2)
+
+t1 <- as.matrix(t1, nrows=1000, ncols=1)
+t2 <- as.matrix(t2, nrows=1000, ncols=1)
+t3 <- as.matrix(t3, nrows=1000, ncols=1)
+
+t1 <- as.data.frame(t1)
+t2 <- as.data.frame(t2)
+t3 <- as.data.frame(t3)
+
+colnames(t1) <- "IQ"
+colnames(t2) <- "IQ"
+colnames(t3) <- "IQ"
+
+dataset <- c(rep(1,1000),rep(2,1000),rep(3,1000))
+fullmat <- matrix(0,3000,2) 
+fullmat[,1] <- dataset
+partmat <- rbind(t1,t2,t3)
+fullmat[,2] <- partmat[,1]
+colnames(fullmat) <- c("dataset","IQ")
+fullmat <- as.data.frame(fullmat)
+
+thm <- theme(axis.title.x=element_blank(),
+             axis.text.x=element_blank(),
+             axis.ticks.x=element_blank(),
+             axis.title.y=element_blank(),
+             axis.text.y=element_blank(),
+             axis.ticks.y=element_blank(),
+             panel.background = element_rect(colour = "#f7fbff", fill = "#f7fbff", size=5),
+             panel.grid.major =element_blank() , 
+             panel.grid.minor = element_blank(),
+             )
+
+
+
+
+logo <- ggplot(fullmat,aes(IQ)) + 
+  geom_density(col = "black",fill = "blue") + 
+  transition_states(dataset,2,4) + shadow_mark(alpha = .3) +
+  geom_vline(xintercept= 50, linetype = "longdash", size = 1) +
+  geom_vline(xintercept= 90, linetype = "longdash", size = 1) +
+  geom_vline(xintercept= 70, linetype = "dotted", size = 0.75) +
+  thm
+anim_save("logo.gif", logo)
+```
 
 Aside
 ================================================================================
 
 <!-- Swap image with your preferred logo -->
-![logo](https://cran.r-project.org/Rlogo.svg){width=100%}
-
+![](logo.gif)
 
 ```{r}
 if(params$pdf_mode){
   cat("View this CV online with links at _https://amberahmedcv.netlify.app/_")
 } else {
-  cat("[<i class='fas fa-download'></i> Download a PDF of this CV](https://github.com/AmberHabib/cv/Amber Ahmed’s CV.pdf)")
+  cat("[<i class='fas fa-download'></i> Download a PDF of this CV](https://github.com/AmberHabib/cv/master/Ahmedcv.pdf)")
 }
 ```
 
@@ -80,7 +130,7 @@ Disclaimer {#disclaimer}
 
 Made with the R package [**pagedown**](https://github.com/rstudio/pagedown). 
 
-The source code is available [on github.com/nstrayer/cv](https://github.com/AmberHabib/cv/).
+The source code is available [on github.com/nstrayer/cv](https://github.com/nstrayer/cv/).
 
 Last updated on `r Sys.Date()`.
 
@@ -115,7 +165,12 @@ Research Experience {data-icon=laptop}
 CV %<>% print_section('research_positions')
 ```
 
+Publications {data-icon=book}
+--------------------------------------------------------------------------------
 
+```{r}
+CV %<>% print_section('academic_articles')
+```
 
 Industry Experience {data-icon=suitcase}
 --------------------------------------------------------------------------------
@@ -130,27 +185,8 @@ CV %<>% print_text_block('industy_experience_aside')
 CV %<>% print_section('industry_positions')
 ```
 
-<!-- These breaks just force a new page so section doesnt get cut off -->
-<br>
-<br>
-<br>
 
-Teaching Experience {data-icon=chalkboard-teacher}
---------------------------------------------------------------------------------
-
-::: aside
-```{r}
-CV %<>% print_text_block('teaching_experience_aside')
-```
-:::
-
-```{r}
-CV %<>% print_section('teaching_positions')
-```
-
-
-
-Selected Data Science Writing {data-icon=chart-line}
+Data Science Writing {data-icon=chart-line}
 --------------------------------------------------------------------------------
 
 ::: aside
@@ -162,37 +198,6 @@ CV %<>% print_text_block('data_science_writing_aside')
 ```{r}
 CV %<>% print_section('data_science_writings')
 ```
-
-
-
-Selected Press (About)  {data-icon=newspaper}
---------------------------------------------------------------------------------
-
-```{r}
-CV %<>% print_section('about_me_press')
-```
-
-
-<br>
-<br>
-
-
-Selected Press (By)  {data-icon=newspaper}
---------------------------------------------------------------------------------
-
-```{r}
-CV %<>% print_section('by_me_press')
-```
-
-
-
-Selected Publications, Posters, and Talks {data-icon=book}
---------------------------------------------------------------------------------
-
-```{r}
-CV %<>% print_section('academic_articles')
-```
-
 
 
 ```{r}
