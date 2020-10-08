@@ -44,9 +44,9 @@ if(params$pdf_mode) {
 library(ggplot2)
 library(gganimate)
 
-t1 <- rnorm(1000,70,25)
+t1 <- rnorm(1000,70,10)
 t2 <- rnorm(1000,70,13)
-t3 <- rnorm(1000,70,10)
+t3 <- rnorm(1000,70,25)
 print(t2)
 
 t1 <- as.matrix(t1, nrows=1000, ncols=1)
@@ -103,7 +103,7 @@ Aside
 if(params$pdf_mode){
   cat("View this CV online with links at _https://amberahmedcv.netlify.app/")
 } else {
-  cat("[<i class='fas fa-download'></i> Download a PDF of this CV](https://github.com/AmberHabib/cv/master/Ahmedcv.pdf)")
+  cat("[<i class='fas fa-download'></i> Download a PDF of this CV](https://github.com/AmberHabib/cv/raw/master/Ahmedcv.pdf)")
 }
 ```
 
