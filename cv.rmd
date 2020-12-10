@@ -128,9 +128,9 @@ CV %>% print_skill_bars()
 Disclaimer {#disclaimer}
 --------------------------------------------------------------------------------
 
-Made with the R package [**pagedown**](https://github.com/rstudio/pagedown). 
+Made with the R package [**pagedown**](https://github.com/rstudio/pagedown) and [**datadrivencv**](https://github.com/nstrayer/cv). 
 
-The source code is available [on github.com/nstrayer/cv](https://github.com/nstrayer/cv/).
+The source code is available [on github.com/amberhabib/cv](https://github.com/AmberHabib/cv).
 
 Last updated on `r Sys.Date()`.
 
