@@ -42,54 +42,71 @@ if(params$pdf_mode) {
 ```
 ```{r message = FALSE, warning = FALSE, results = FALSE}
 library(ggplot2)
+#library("viridis") 
 library(gganimate)
 
-t1 <- rnorm(1000,70,10)
-t2 <- rnorm(1000,70,13)
-t3 <- rnorm(1000,70,25)
-print(t2)
 
-t1 <- as.matrix(t1, nrows=1000, ncols=1)
-t2 <- as.matrix(t2, nrows=1000, ncols=1)
-t3 <- as.matrix(t3, nrows=1000, ncols=1)
+get_shape <- function(x_in, y_in,delta ) {
+  n_div <- (2*pi)/delta
+  id <- c() #shape id
+  x<- c()   #x-loc
+  y <- c()  #y-loc
+  for (i in 1:n_div){
+    id_t<- c()  #temp vars for storing id, x and y for each iter
+    x_t<- c()
+    y_t <- c()
+    
+    xc <- x_in # based on given side length l, create a matrix of x and y
+    yc <- y_in
+    xy_mat <- rbind(xc,yc)
+    
+    ifelse(i==1, t<-0,t <- t+delta) # change in angle (t for theta)
+    #print(t)
+    #
+    ##2d rotation matrix, source wikipedia, link above
+    #
+    rot_matrix <- matrix(c(cos(t), -sin(t), sin(t), cos(t)), ncol=2) 
+    id_t <- rep(i,length(x_in))
+    
+    conv <- rot_matrix%*%xy_mat #actual rotation
+    
+    #rotated x,y coordinates and id, extraction and storage
+    x_t<- conv[1,] 
+    y_t<- conv[2,]
+    x<- c(x,x_t)
+    y<- c(y,y_t)
+    id<- c(id,id_t)
+  }
+  df <- data.frame(x = x, y = y, id = id)
+  return(df) 
+}
+t=0
+delta <- pi/10
+x_polygon_base <- c(-0.5,0.5,0.25,   0,-0.25) # based on given side length l, create a matrix of x and y
+y_polygon_base <- c(0 ,0,   4,4.75,   4)
 
-t1 <- as.data.frame(t1)
-t2 <- as.data.frame(t2)
-t3 <- as.data.frame(t3)
-
-colnames(t1) <- "IQ"
-colnames(t2) <- "IQ"
-colnames(t3) <- "IQ"
-
-dataset <- c(rep(1,1000),rep(2,1000),rep(3,1000))
-fullmat <- matrix(0,3000,2) 
-fullmat[,1] <- dataset
-partmat <- rbind(t1,t2,t3)
-fullmat[,2] <- partmat[,1]
-colnames(fullmat) <- c("dataset","IQ")
-fullmat <- as.data.frame(fullmat)
-
-thm <- theme(axis.title.x=element_blank(),
-             axis.text.x=element_blank(),
-             axis.ticks.x=element_blank(),
-             axis.title.y=element_blank(),
-             axis.text.y=element_blank(),
-             axis.ticks.y=element_blank(),
-             panel.background = element_rect(colour = "#f7fbff", fill = "#f7fbff", size=5),
-             panel.grid.major =element_blank() , 
-             panel.grid.minor = element_blank(),
-             )
+base_four_sided <- get_shape(x_polygon_base,y_polygon_base,delta)
+#base_four_sided 
 
 
-
-
-logo <- ggplot(fullmat,aes(IQ)) + 
-  geom_density(col = "black",fill = "blue") + 
-  transition_states(dataset,2,4) + shadow_mark(alpha = .3) +
-  geom_vline(xintercept= 50, linetype = "longdash", size = 1) +
-  geom_vline(xintercept= 90, linetype = "longdash", size = 1) +
-  geom_vline(xintercept= 70, linetype = "dotted", size = 0.75) +
-  thm
+logo1 <-  ggplot(data=base_four_sided, aes(x=x,y=y, fill=factor(id))) +
+  geom_polygon(data = base_four_sided,aes(alpha = 0.2),alpha = 0.2)+
+  #scale_color_viridis(discrete = TRUE, option = "A")+
+  #scale_fill_viridis(discrete = TRUE) +
+  #theme(legend.position = "none")+
+  theme(legend.position = "none",
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        plot.background = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.background = element_rect(colour = "#f7fbff", fill = "#f7fbff", size=5),
+        axis.title.x=element_blank(),
+        axis.title.y=element_blank())+
+  transition_states(id) +shadow_mark()
+logo <- animate(logo1,height = 430, width = 430)
 anim_save("logo.gif", logo)
 ```
 
