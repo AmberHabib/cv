@@ -106,7 +106,7 @@ logo1 <-  ggplot(data=base_four_sided, aes(x=x,y=y, fill=factor(id))) +
         axis.title.x=element_blank(),
         axis.title.y=element_blank())+
   transition_states(id) +shadow_mark()
-logo <- animate(logo1,height = 430, width = 430)
+logo <- gganimate::animate(logo1,height = 430, width = 430)
 anim_save("logo.gif", logo)
 ```
 
